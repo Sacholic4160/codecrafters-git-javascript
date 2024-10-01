@@ -20,7 +20,7 @@ switch (command) {
     case "hash-object":
         const fileName = process.argv[4];
         const shouldWrite = process.argv[3] === '-w'
-        hashGitObject(fileName, shouldWrite);
+        hashObject(fileName, shouldWrite);
         break;
     default:
         throw new Error(`Unknown command ${command}`);
@@ -42,10 +42,36 @@ function catFile(hash) {
     process.stdout.write(result);
 }
 
-function hashGitObject(fileName, shouldWrite) {
-     const filePath = path.join(process.cwd, fileName);
-   const  fileContent = fs.readFileSync(filePath);
-    
-    const blob = `blob ${fileContent.length()} \0 ${fileContent}`
-    console.log(blob)
+function hashObject(fileName, shouldWrite) {
+    // 1. Read file content
+    const filePath = path.join(process.cwd(), fileName);
+    const fileContent = fs.readFileSync(filePath);
+  
+    // 2. Create the blob string: `blob <size>\0<content>`
+    const blobHeader = `blob ${fileContent.length}\0`;
+    const blob = Buffer.concat([Buffer.from(blobHeader), fileContent]);
+  
+    // 3. Compute the SHA-1 hash of the blob
+    const sha1 = crypto.createHash("sha1").update(blob).digest("hex");
+  
+    // 4. Write the blob to .git/objects if the -w flag is present
+    if (shouldWrite) {
+      const objectDir = path.join(process.cwd(), ".git", "objects", sha1.slice(0, 2));
+      const objectFile = sha1.slice(2);
+  
+      // Create the folder if it doesn't exist
+      fs.mkdirSync(objectDir, { recursive: true });
+  
+      // Compress the blob
+      const compressedBlob = zlib.deflateSync(blob);
+  
+      // Write the compressed blob to the objects directory
+      fs.writeFileSync(path.join(objectDir, objectFile), compressedBlob);
+    }
+  
+    // 5. Output the hash
+    process.stdout.write(sha1);
+
+   
+
 }
