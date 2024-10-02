@@ -22,6 +22,8 @@ switch (command) {
         const shouldWrite = process.argv[3] === '-w'
         hashObject(fileName, shouldWrite);
         break;
+    case "ls-tree":
+        
     default:
         throw new Error(`Unknown command ${command}`);
 }
