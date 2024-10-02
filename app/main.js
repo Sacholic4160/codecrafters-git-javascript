@@ -94,9 +94,10 @@ function lsTree(flag) {
         const filePath = path.join(process.cwd(), '.git', 'objects', directory, fileName);
         console.log(filePath)
         const inlattedData  = zlib.inflateSync(fs.readFileSync(filePath).toString().split('\0'))
+        console.log(fs.readFileSync(filePath).toString())
         console.log(inlattedData)
 
-
+     
 
 
 
