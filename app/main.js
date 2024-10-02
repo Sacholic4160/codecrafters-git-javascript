@@ -93,20 +93,17 @@ function lsTree(flag) {
 
         const filePath = path.join(process.cwd(), '.git', 'objects', directory, fileName);
         console.log(filePath)
-      
-        const inflattedData  = zlib.inflateSync(fs.readFileSync(filePath).toString().split('\0'))
-      
-       const content  = inflattedData.split(1).filter(value => value.includes(" "));
+        console.log(fs.readFileSync(filePath))
+        console.log(zlib.inflateSync(fs.readFileSync(filePath)).toString())
+        console.log(zlib.inflateSync(fs.readFileSync(filePath)).toString().split('\0'))
+        const inflattedData  = zlib.inflateSync(fs.readFileSync(filePath)).toString().split('\0')
+      console.log(inflattedData)
+       const content  = inflattedData.slice(1).filter(value => value.includes(" "));
        console.log(content)
        const names = content.map(value => value.split(" ")[1]);
         console.log(names)
 
         names.forEach(name => process.stdout.write(`${name}\n`));
-
-     
-
-
-
 
     }
 }
