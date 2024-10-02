@@ -1,7 +1,8 @@
 const fs = require("fs");
 const path = require("path");
 const zlib = require('zlib')
-const crypto = require('crypto')
+const crypto = require('crypto');
+
 
 // You can use print statements as follows for debugging, they'll be visible when running tests.
 //console.log("Logs from your program will appear here!");
@@ -23,7 +24,9 @@ switch (command) {
         hashObject(fileName, shouldWrite);
         break;
     case "ls-tree":
-        
+        const flag = process.argv[3];
+        lsTree(flag);
+        break;
     default:
         throw new Error(`Unknown command ${command}`);
 }
@@ -77,4 +80,26 @@ function hashObject(fileName, shouldWrite) {
 
    
 
+}
+
+function lsTree(flag) {
+    if(flag == '--name-only'){
+        const sha = process.argv[4];
+        console.log(sha)
+        const directory = sha.slice(0,2);
+        console.log(directory)
+        const fileName = sha.slice(2);
+        console.log(fileName)
+
+        const filePath = path.join(process.cwd(), '.git', 'objects', directory, fileName);
+        console.log(filePath)
+        const inlattedData  = zlib.inflateSync(fs.readFileSync(filePath).toString().split('\0'))
+        console.log(inlattedData)
+
+
+
+
+
+
+    }
 }
