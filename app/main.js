@@ -67,10 +67,11 @@ function hashObject(fileName, shouldWrite) {
   
       // Write the compressed blob to the objects directory
       fs.writeFileSync(path.join(objectDir, objectFile), compressedBlob);
-    }
-  
+      
     // 5. Output the hash
     process.stdout.write(sha1);
+    }
+  
 
    
 
