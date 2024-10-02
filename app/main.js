@@ -94,8 +94,8 @@ function lsTree(flag) {
         const filePath = path.join(process.cwd(), '.git', 'objects', directory, fileName);
         console.log(filePath)
         console.log(fs.readFileSync(filePath))
-        console.log(zlib.inflateSync(fs.readFileSync(filePath)).toString())
-        console.log(zlib.inflateSync(fs.readFileSync(filePath)).toString().split('\0'))
+        // console.log(zlib.inflateSync(fs.readFileSync(filePath)).toString())
+        // console.log(zlib.inflateSync(fs.readFileSync(filePath)).toString().split('\0'))
         const inflattedData  = zlib.inflateSync(fs.readFileSync(filePath)).toString().split('\0')
       console.log(inflattedData)
        const content  = inflattedData.slice(1).filter(value => value.includes(" "));
