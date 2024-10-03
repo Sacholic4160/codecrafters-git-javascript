@@ -120,7 +120,9 @@ function writeTreeForPath(path) {
       const dirContent = fs.readdirSync(path)
       //console.log('fullPath:',fullPath);
       const entries = dirContent.filter((name) => name !== '.git' && name !== 'main.js')
+      console.log('filter name', name)
                       .map((name) => {
+                        console.log('map name', name)
           const fullPath = join(path, name);
           console.log('fullPath:',fullPath);
           const stat = fs.statSync(fullPath)
