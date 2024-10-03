@@ -219,10 +219,10 @@ function commitTree() {
 
    const dir = commitHash.slice(0, 2);
     const fileName = commitHash.slice(2);
-    const commitDir = resolve(process.cwd(), '.git', 'objects', dir);
+    const commitDir = join(process.cwd(), '.git', 'objects', dir);
     
     fs.mkdirSync(commitDir, { recursive: true });
-    fs.writeFileSync(resolve(commitDir, fileName), compressedCommit);
+    fs.writeFileSync(join(commitDir, fileName), compressedCommit);
     process.stdout.write(commitHash);
 }
 // function commitTree() {
