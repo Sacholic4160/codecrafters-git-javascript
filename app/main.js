@@ -113,7 +113,7 @@ function lsTree(flag) {
 
 function writeTree() {
     const hash = writeTreeForPath(".");
-    process.stdout.write(hash);
+    process.stdout.write(hash.slice(0,40));
 }
 
 // function writeTreeForPath(path) {
