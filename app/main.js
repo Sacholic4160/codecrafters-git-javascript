@@ -130,8 +130,29 @@ function writeTreeForPath(path) {
                 return ["40000", name, writeTreeForPath(name)];
             }
             else if (stat.isFile()) {
-                return ["1006"]
+                return ["100644", name, saveFileToBlob(name)];
             }
+            return ["", "", ""];
         })
+     .sort((a,b) => a[1]- b[1])
+     .reduce((acc, [mode, name, hash]) => {
+        return Buffer.concat([acc, Buffer.from(`${mode} ${name} \x00`), Buffer.from(hash, "hex")])
+     }, Buffer.alloc(0))
+     console.log('entries:', entries)
 
+     const tree = Buffer.concat(Buffer.from(`tree ${entries.length}\x00`), entries);
+     console.log('tree:', tree)
+     const hash = crypto.createHash("sha1").update(tree).digest("hex")
+     console.log('hash:', hash)
+     writeObject(hash, tree);
+     return hash;
+
+}
+
+
+function saveFileToBlob(file) {
+ 
+    console.log('fs.readFileSync(file):', fs.readFileSync(file))
+    const data = `blob ${fs.statSync(file).length}\x00${fs.readFileSync(file)}`
+    console.log('data', data)
 }
