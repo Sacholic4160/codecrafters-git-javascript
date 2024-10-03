@@ -166,7 +166,7 @@ function writeTreeForPath(path) {
         return Buffer.concat([acc, Buffer.from(`${mode} ${name}\x00`), Buffer.from(hash, "hex")]);
       }, Buffer.alloc(0));
     const tree = Buffer.concat([Buffer.from(`tree ${entries.length}\x00`), entries]);
-    const hash = createHash("sha1").update(tree).digest("hex");
+    const hash = crypto.createHash("sha1").update(tree).digest("hex");
     console.log(entries.map(([, , name]) => name).sort().join("\n"));
     writeObject(hash, tree);
     return hash;
