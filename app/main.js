@@ -202,6 +202,6 @@ function writeObject(hash, data) {
     // fs.writeFileSync(join(dir, hash.slice(2)), zlib.deflateSync(data));
     const dir = join(__dirname, ".git", "objects", hash.slice(0, 2));
   fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(join(dir, hash.slice(2)), zlib.deflateSync(content));
+  fs.writeFileSync(join(dir, hash.slice(2)), zlib.deflateSync(data));
 }
 
