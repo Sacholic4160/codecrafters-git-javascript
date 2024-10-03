@@ -191,19 +191,16 @@ function saveFileAsBlob(file) {
     const data = `blob ${fs.statSync(file).size}\x00${fs.readFileSync(file)}`;
     //console.log('data:', data)
     const hash = crypto.createHash("sha1").update(data).digest("hex");
-    const dir = join(__dirname, ".git", "objects", hash.slice(0, 2));
-    fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(join(dir, hash.slice(2)), zlib.deflateSync(data));
-    process.stdout.write(hash);
+    // const dir = join(__dirname, ".git", "objects", hash.slice(0, 2));
+    // fs.mkdirSync(dir, { recursive: true });
+    // fs.writeFileSync(join(dir, hash.slice(2)), zlib.deflateSync(data));
+    // process.stdout.write(hash);
     writeObject(hash, data);
     return hash;
   }
 
-function writeObject(hash, data) {
-    // const dir = fs.mkdir(join(process.cwd(), ".git","objects", hash.slice(0,2)), {recursive: true})
-    // fs.writeFileSync(join(dir, hash.slice(2)), zlib.deflateSync(data));
+  function writeObject(hash, content) {
     const dir = join(__dirname, ".git", "objects", hash.slice(0, 2));
-  fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(join(dir, hash.slice(2)), zlib.deflateSync(data));
-}
-
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(join(dir, hash.slice(2)), deflateSync(content));
+  }
