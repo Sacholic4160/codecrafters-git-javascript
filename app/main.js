@@ -117,6 +117,21 @@ function writeTree() {
 }
 
 function writeTreeForPath(path) {
-      const fullPath = fs.readdirSync(path)
-      console.log('fullPath:',fullPath);
+      const dirContent = fs.readdirSync(path)
+      //console.log('fullPath:',fullPath);
+      const entries = dirContent.filter((name) => name !== '.git' && name !== 'main.js')
+                      .map((name) => {
+          const fullPath = path.join(path, name);
+          console.log('fullPath:',fullPath);
+          const stat = fs.statSync(fullPath)
+          console.log('stat:',stat);
+
+          if(stat.isDirectory()){
+            return ["40000", name, writeTreeForPath(name)];
+          } 
+          else if(stat.isFile()){
+            return ["1006"]
+          }
+                      })
+
 }
