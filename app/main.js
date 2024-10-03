@@ -1,5 +1,5 @@
 const fs = require("fs");
-const { join } = require("path");
+const { join, resolve } = require("path");
 const zlib = require('zlib')
 const crypto = require('crypto');
 
@@ -215,10 +215,10 @@ function commitTree() {
 
    const dir = commitHash.slice(0, 2);
     const fileName = commitHash.slice(2);
-    const commitDir = path.resolve(__dirname, '.git', 'objects', dir);
+    const commitDir = resolve(__dirname, '.git', 'objects', dir);
     
     mkdirSync(commitDir, { recursive: true });
-    writeFileSync(path.resolve(commitDir, fileName), compressedCommit);
+    writeFileSync(resolve(commitDir, fileName), compressedCommit);
     
     process.stdout.write(commitHash);
 }
