@@ -210,7 +210,9 @@ function commitTree() {
     Buffer.from(`commit ${commitContentBuffer.length}\0`,commitContentBuffer)
    ])
 
+
    const commitHash = crypto.createHash("sha1").update(commitBuffer).digest("hex");
+   
    const compressedCommit = zlib.deflateSync(commitHash)
 
    const dir = commitHash.slice(0, 2);
@@ -219,6 +221,6 @@ function commitTree() {
     
     fs.mkdirSync(commitDir, { recursive: true });
     fs.writeFileSync(resolve(commitDir, fileName), compressedCommit);
-    
+    console.log(commitHash)
     process.stdout.write(commitHash);
 }
