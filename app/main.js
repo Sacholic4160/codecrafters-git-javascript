@@ -30,6 +30,9 @@ switch (command) {
     case "write-tree":
         writeTree();
         break;
+    case "commit-tree":
+        commitTree();
+        break
     default:
         throw new Error(`Unknown command ${command}`);
 }
@@ -88,24 +91,12 @@ function hashObject(fileName, shouldWrite) {
 function lsTree(flag) {
     if (flag == '--name-only') {
         const sha = process.argv[4];
-        // console.log(sha)
         const directory = sha.slice(0, 2);
-        // console.log(directory)
         const fileName = sha.slice(2);
-        //console.log(fileName)
-
         const filePath = join(process.cwd(), '.git', 'objects', directory, fileName);
-        // console.log(filePath)
-        // console.log(fs.readFileSync(filePath))
-        // console.log(zlib.inflateSync(fs.readFileSync(filePath)).toString())
-        // console.log(zlib.inflateSync(fs.readFileSync(filePath)).toString().split('\0'))
         const inflattedData = zlib.inflateSync(fs.readFileSync(filePath)).toString().split('\0')
-        //console.log(inflattedData)
         const content = inflattedData.slice(1).filter(value => value.includes(" "));
-        // console.log(content)
         const names = content.map(value => value.split(" ")[1]);
-        // console.log(names)
-
         names.forEach(name => process.stdout.write(`${name}\n`));
 
     }
@@ -125,7 +116,7 @@ function writeTree() {
 //            // console.log('fullPath:', fullPath);
 //             const stat = fs.statSync(fullPath)
 //            // console.log('stat:', stat);
- 
+
 //             if (stat.isDirectory()) {
 //                 return ["40000", name, writeTreeForPath(name)];
 //             }
@@ -151,29 +142,29 @@ function writeTree() {
 function writeTreeForPath(path) {
     const dirContent = fs.readdirSync(path);
     const entries = dirContent.filter((name) => name !== ".git" && name !== "main.js")
-      .map((name) => {
-        const fullPath = join(path, name);
-        const stat = fs.statSync(fullPath);
-        if (stat.isDirectory()) {
-          return ["40000", name, writeTreeForPath(fullPath)];
-        } else if (stat.isFile()) {
-          return ["100644", name, saveFileAsBlob(fullPath)];
-        }
-        return ["", "", ""];
-      })
-      .sort((a, b) => (a[1] - b[1]))
-      .reduce((acc, [mode, name, hash]) => {
-        return Buffer.concat([acc, Buffer.from(`${mode} ${name}\x00`), Buffer.from(hash, "hex")]);
-      }, Buffer.alloc(0));
+        .map((name) => {
+            const fullPath = join(path, name);
+            const stat = fs.statSync(fullPath);
+            if (stat.isDirectory()) {
+                return ["40000", name, writeTreeForPath(fullPath)];
+            } else if (stat.isFile()) {
+                return ["100644", name, saveFileAsBlob(fullPath)];
+            }
+            return ["", "", ""];
+        })
+        .sort((a, b) => (a[1] - b[1]))
+        .reduce((acc, [mode, name, hash]) => {
+            return Buffer.concat([acc, Buffer.from(`${mode} ${name}\x00`), Buffer.from(hash, "hex")]);
+        }, Buffer.alloc(0));
     const tree = Buffer.concat([Buffer.from(`tree ${entries.length}\x00`), entries]);
     const hash = crypto.createHash("sha1").update(tree).digest("hex");
     writeObject(hash, tree);
     return hash;
-  }
+}
 
 
 // function saveFileAsBlob(file) {
- 
+
 //    // console.log('fs.readFileSync(file):', fs.readFileSync(file)) data inside the file using this 
 //     const data = `blob ${fs.statSync(file).size}\x00${fs.readFileSync(file)}`
 //     //console.log('data', data)
@@ -190,10 +181,23 @@ function saveFileAsBlob(file) {
     const hash = crypto.createHash("sha1").update(data).digest("hex");
     writeObject(hash, data);
     return hash;
-  }
+}
 
-  function writeObject(hash, content) {
+function writeObject(hash, content) {
     const dir = join(process.cwd(), ".git", "objects", hash.slice(0, 2));
     fs.mkdirSync(dir, { recursive: true });
     fs.writeFileSync(join(dir, hash.slice(2)), zlib.deflateSync(content));
-  }
+}
+
+
+function commitTree() {
+    const treeSha = process.argv[3];
+    console.log(treeSha);
+
+    const parentTreeSha = process.argv.slice(process.argv.indexOf('-p'), process.argv.indexOf(-p)+2)[1];
+    console.log(process.argv);
+    console.log(parentTreeSha);
+    console.log(process.argv.slice(process.argv.indexOf('-p'), process.argv.indexOf(-p)+2));
+    console.log(process.argv.slice(process.argv.indexOf('-p'), process.argv.indexOf(-p)+2)[1]);
+    
+}
