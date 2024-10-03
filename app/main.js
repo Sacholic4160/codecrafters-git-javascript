@@ -152,7 +152,7 @@ function writeTreeForPath(path) {
 
 function saveFileToBlob(file) {
  
-    console.log('fs.readFileSync(file):', fs.readFileSync(file))
-    const data = `blob ${fs.statSync(file).length}\x00${fs.readFileSync(file)}`
+   // console.log('fs.readFileSync(file):', fs.readFileSync(file)) data inside the file using this 
+    const data = `blob ${fs.statSync(file).size}\x00${fs.readFileSync(file)}`
     console.log('data', data)
 }
