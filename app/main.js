@@ -118,5 +118,5 @@ function writeTree() {
 
 function writeTreeForPath(path) {
       const fullPath = fs.readdirSync(path)
-      console.log(fullPath);
+      console.log('fullPath:',fullPath);
 }
