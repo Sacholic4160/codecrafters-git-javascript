@@ -201,6 +201,6 @@ function saveFileAsBlob(file) {
 
   function writeObject(hash, content) {
     const dir = join(__dirname, ".git", "objects", hash.slice(0, 2));
-    mkdirSync(dir, { recursive: true });
-    writeFileSync(join(dir, hash.slice(2)), deflateSync(content));
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(join(dir, hash.slice(2)), zlib.deflateSync(content));
   }
