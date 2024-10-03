@@ -173,19 +173,29 @@ function writeTreeForPath(path) {
   }
 
 
-function saveFileAsBlob(file) {
+// function saveFileAsBlob(file) {
  
-   // console.log('fs.readFileSync(file):', fs.readFileSync(file)) data inside the file using this 
-    const data = `blob ${fs.statSync(file).size}\x00${fs.readFileSync(file)}`
-    console.log('data', data)
+//    // console.log('fs.readFileSync(file):', fs.readFileSync(file)) data inside the file using this 
+//     const data = `blob ${fs.statSync(file).size}\x00${fs.readFileSync(file)}`
+//     //console.log('data', data)
+//     const hash = crypto.createHash("sha1").update(data).digest("hex");
+//     console.log('hash', hash)
+//     const dir = fs.mkdir(join(process.cwd(), ".git","objects", hash.slice(0,2)), {recursive: true})
+//     fs.writeFileSync(join(dir, hash.slice(2)), zlib.deflateSync(data));
+//     process.stdout.write(hash);
+//     writeObject(hash, data);
+//     return hash;
+// }
+function saveFileAsBlob(file) {
+    const data = `blob ${fs.statSync(file).size}\x00${fs.readFileSync(file)}`;
     const hash = crypto.createHash("sha1").update(data).digest("hex");
-    console.log('hash', hash)
-    const dir = fs.mkdir(join(process.cwd(), ".git","objects", hash.slice(0,2)), {recursive: true})
+    const dir = join(__dirname, ".git", "objects", hash.slice(0, 2));
+    fs.mkdirSync(dir, { recursive: true });
     fs.writeFileSync(join(dir, hash.slice(2)), zlib.deflateSync(data));
     process.stdout.write(hash);
     writeObject(hash, data);
     return hash;
-}
+  }
 
 function writeObject(hash, data) {
     const dir = fs.mkdir(join(process.cwd(), ".git","objects", hash.slice(0,2)), {recursive: true})
