@@ -35,11 +35,11 @@ switch (command) {
 }
 
 function createGitDirectory() {
-    fs.mkdirSync(path.join(process.cwd(), ".git"), { recursive: true });
-    fs.mkdirSync(path.join(process.cwd(), ".git", "objects"), { recursive: true });
-    fs.mkdirSync(path.join(process.cwd(), ".git", "refs"), { recursive: true });
+    fs.mkdirSync(join(process.cwd(), ".git"), { recursive: true });
+    fs.mkdirSync(join(process.cwd(), ".git", "objects"), { recursive: true });
+    fs.mkdirSync(join(process.cwd(), ".git", "refs"), { recursive: true });
 
-    fs.writeFileSync(path.join(process.cwd(), ".git", "HEAD"), "ref: refs/heads/main\n");
+    fs.writeFileSync(join(process.cwd(), ".git", "HEAD"), "ref: refs/heads/main\n");
     console.log("Initialized git directory");
 }
 
@@ -155,4 +155,17 @@ function saveFileToBlob(file) {
    // console.log('fs.readFileSync(file):', fs.readFileSync(file)) data inside the file using this 
     const data = `blob ${fs.statSync(file).size}\x00${fs.readFileSync(file)}`
     console.log('data', data)
+    const hash = crypto.createHash("sha1").update(data).digest("hex");
+    console.log('hash', hash)
+    const dir = fs.mkdir(join(process.cwd(), ".git","objects", hash.slice(0,2)), {recursive: true})
+    fs.writeFileSync(join(dir, hash.slice(2)), zlib.deflateSync(data));
+    process.stdout.write(hash);
+    writeObject(hash, data);
+    return hash;
 }
+
+function writeObject(hash, data) {
+    const dir = fs.mkdir(join(process.cwd(), ".git","objects", hash.slice(0,2)), {recursive: true})
+    fs.writeFileSync(join(dir, hash.slice(2)), zlib.deflateSync(data));
+}
+
