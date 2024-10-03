@@ -225,11 +225,6 @@ function writeObject(hash, content) {
 //     fs.writeFileSync(resolve(commitDir, fileName), compressedCommit);
 //     process.stdout.write(commitHash);
 // }
-const fs = require('fs');
-const crypto = require('crypto');
-const zlib = require('zlib');
-const { resolve } = require('path');
-
 function commitTree() {
     const treeSha = process.argv[3];
     const parentTreeSha = process.argv.indexOf('-p') !== -1 ? process.argv[process.argv.indexOf('-p') + 1] : null;
