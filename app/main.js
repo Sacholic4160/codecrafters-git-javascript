@@ -258,7 +258,7 @@ function commitTree() {
     // Write the compressed commit object to the .git/objects directory
     const dir = commitHash.slice(0, 2);
     const fileName = commitHash.slice(2);
-    const commitDir = resolve(process.cwd, '.git', 'objects', dir);
+    const commitDir = resolve(process.cwd(), '.git', 'objects', dir);
     
     fs.mkdirSync(commitDir, { recursive: true });
     fs.writeFileSync(resolve(commitDir, fileName), compressedCommit);
