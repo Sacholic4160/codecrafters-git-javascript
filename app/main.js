@@ -44,7 +44,7 @@ function createGitDirectory() {
 }
 
 function catFile(hash) {
-    const content = fs.readFileSync(path.join(process.cwd(), ".git", "objects", hash.slice(0, 2), hash.slice(2)));
+    const content = fs.readFileSync(join(process.cwd(), ".git", "objects", hash.slice(0, 2), hash.slice(2)));
     const dataUnzipped = zlib.inflateSync(content);
     const result = dataUnzipped.toString().split('\0')[1];
     process.stdout.write(result);
@@ -52,7 +52,7 @@ function catFile(hash) {
 
 function hashObject(fileName, shouldWrite) {
     // 1. Read file content
-    const filePath = path.join(process.cwd(), fileName);
+    const filePath = join(process.cwd(), fileName);
     const fileContent = fs.readFileSync(filePath);
 
     // 2. Create the blob string: `blob <size>\0<content>`
@@ -64,7 +64,7 @@ function hashObject(fileName, shouldWrite) {
 
     // 4. Write the blob to .git/objects if the -w flag is present
     if (shouldWrite) {
-        const objectDir = path.join(process.cwd(), ".git", "objects", sha1.slice(0, 2));
+        const objectDir = join(process.cwd(), ".git", "objects", sha1.slice(0, 2));
         const objectFile = sha1.slice(2);
 
         // Create the folder if it doesn't exist
@@ -74,7 +74,7 @@ function hashObject(fileName, shouldWrite) {
         const compressedBlob = zlib.deflateSync(blob);
 
         // Write the compressed blob to the objects directory
-        fs.writeFileSync(path.join(objectDir, objectFile), compressedBlob);
+        fs.writeFileSync(join(objectDir, objectFile), compressedBlob);
 
         // 5. Output the hash
         process.stdout.write(sha1);
