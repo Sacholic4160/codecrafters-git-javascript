@@ -120,20 +120,20 @@ function writeTreeForPath(path) {
       const dirContent = fs.readdirSync(path)
       //console.log('fullPath:',fullPath);
       const entries = dirContent.filter((name) => name !== '.git' && name !== 'main.js')
-      console.log('filter name', name)
-                      .map((name) => {
-                        console.log('map name', name)
-          const fullPath = join(path, name);
-          console.log('fullPath:',fullPath);
-          const stat = fs.statSync(fullPath)
-          console.log('stat:',stat);
+      console.log('filter name', entries)
+        //               .map((name) => {
+        //                 console.log('map name', name)
+        //   const fullPath = join(path, name);
+        //   console.log('fullPath:',fullPath);
+        //   const stat = fs.statSync(fullPath)
+        //   console.log('stat:',stat);
 
-          if(stat.isDirectory()){
-            return ["40000", name, writeTreeForPath(name)];
-          } 
-          else if(stat.isFile()){
-            return ["1006"]
-          }
-                      })
+        //   if(stat.isDirectory()){
+        //     return ["40000", name, writeTreeForPath(name)];
+        //   } 
+        //   else if(stat.isFile()){
+        //     return ["1006"]
+        //   }
+        //               })
 
 }
