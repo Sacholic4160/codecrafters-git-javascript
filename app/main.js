@@ -94,7 +94,7 @@ function lsTree(flag) {
         const fileName = sha.slice(2);
         //console.log(fileName)
 
-        const filePath = path.join(process.cwd(), '.git', 'objects', directory, fileName);
+        const filePath = join(process.cwd(), '.git', 'objects', directory, fileName);
         // console.log(filePath)
         // console.log(fs.readFileSync(filePath))
         // console.log(zlib.inflateSync(fs.readFileSync(filePath)).toString())
