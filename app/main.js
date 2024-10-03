@@ -161,7 +161,7 @@ function writeTreeForPath(path) {
         }
         return ["", "", ""];
       })
-      .sort((a, b) => a[1] - b[1])
+      .sort((a, b) => a[1].localeCompare(b[1]))
       .reduce((acc, [mode, name, hash]) => {
         return Buffer.concat([acc, Buffer.from(`${mode} ${name}\x00`), Buffer.from(hash, "hex")]);
       }, Buffer.alloc(0));
