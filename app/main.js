@@ -161,14 +161,12 @@ function writeTreeForPath(path) {
         }
         return ["", "", ""];
       })
-      .sort((a, b) => a[1].localeCompare(b[1]))
+      .sort((a, b) => (a[1] - b[1]))
       .reduce((acc, [mode, name, hash]) => {
         return Buffer.concat([acc, Buffer.from(`${mode} ${name}\x00`), Buffer.from(hash, "hex")]);
       }, Buffer.alloc(0));
     const tree = Buffer.concat([Buffer.from(`tree ${entries.length}\x00`), entries]);
-    //console.log('tree:', tree)
     const hash = crypto.createHash("sha1").update(tree).digest("hex");
-    //console.log(entries.map(([, , name]) => name).sort().join("\n"));
     writeObject(hash, tree);
     return hash;
   }
@@ -189,12 +187,7 @@ function writeTreeForPath(path) {
 // }
 function saveFileAsBlob(file) {
     const data = `blob ${fs.statSync(file).size}\x00${fs.readFileSync(file)}`;
-    //console.log('data:', data)
     const hash = crypto.createHash("sha1").update(data).digest("hex");
-    // const dir = join(__dirname, ".git", "objects", hash.slice(0, 2));
-    // fs.mkdirSync(dir, { recursive: true });
-    // fs.writeFileSync(join(dir, hash.slice(2)), zlib.deflateSync(data));
-    // process.stdout.write(hash);
     writeObject(hash, data);
     return hash;
   }
