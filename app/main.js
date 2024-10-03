@@ -27,6 +27,9 @@ switch (command) {
         const flag = process.argv[3];
         lsTree(flag);
         break;
+    case "write-tree":
+        writeTree();
+        break;
     default:
         throw new Error(`Unknown command ${command}`);
 }
@@ -106,4 +109,14 @@ function lsTree(flag) {
         names.forEach(name => process.stdout.write(`${name}\n`));
 
     }
+}
+
+function writeTree() {
+    const hash = writeTreeForPath(".");
+    process.stdout.write(hash);
+}
+
+function writeTreeForPath(path) {
+      const fullPath = fs.readdirSync(path)
+      console.log(fullPath);
 }
