@@ -217,8 +217,8 @@ function commitTree() {
     const fileName = commitHash.slice(2);
     const commitDir = resolve(__dirname, '.git', 'objects', dir);
     
-    mkdirSync(commitDir, { recursive: true });
-    writeFileSync(resolve(commitDir, fileName), compressedCommit);
+    fs.mkdirSync(commitDir, { recursive: true });
+    fs.writeFileSync(resolve(commitDir, fileName), compressedCommit);
     
     process.stdout.write(commitHash);
 }
