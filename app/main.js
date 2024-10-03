@@ -225,47 +225,47 @@ function commitTree() {
     fs.writeFileSync(join(commitDir, fileName), compressedCommit);
     process.stdout.write(commitHash);
 }
-// function commitTree() {
-//     const treeSha = process.argv[3];
-//     const parentTreeSha = process.argv.indexOf('-p') !== -1 ? process.argv[process.argv.indexOf('-p') + 1] : null;
-//     const message = process.argv[process.argv.indexOf('-m') + 1];
+function commitTree() {
+    const treeSha = process.argv[3];
+    const parentTreeSha = process.argv.indexOf('-p') !== -1 ? process.argv[process.argv.indexOf('-p') + 1] : null;
+    const message = process.argv[process.argv.indexOf('-m') + 1];
 
-//     // Create the commit content following the correct Git format
-//     let commitContent = `tree ${treeSha}\n`;
+    // Create the commit content following the correct Git format
+    let commitContent = `tree ${treeSha}\n`;
     
-//     if (parentTreeSha) {
-//         commitContent += `parent ${parentTreeSha}\n`;
-//     }
+    if (parentTreeSha) {
+        commitContent += `parent ${parentTreeSha}\n`;
+    }
     
-//     const authorInfo = `The Commiter <thecommitter@test.com> ${Math.floor(Date.now() / 1000)} +0000`;
-//     commitContent += `author ${authorInfo}\n`;
-//     commitContent += `committer ${authorInfo}\n\n`;
-//     commitContent += `${message}\n`;
+    const authorInfo = `The Commiter <thecommitter@test.com> ${Math.floor(Date.now() / 1000)} +0000`;
+    commitContent += `author ${authorInfo}\n`;
+    commitContent += `committer ${authorInfo}\n\n`;
+    commitContent += `${message}\n`;
 
-//     // Create the commit buffer
-//     const commitContentBuffer = Buffer.from(commitContent);
-//     const commitBuffer = Buffer.concat([
-//         Buffer.from(`commit ${commitContentBuffer.length}\0`),
-//         commitContentBuffer
-//     ]);
+    // Create the commit buffer
+    const commitContentBuffer = Buffer.from(commitContent);
+    const commitBuffer = Buffer.concat([
+        Buffer.from(`commit ${commitContentBuffer.length}\0`),
+        commitContentBuffer
+    ]);
 
-//     // Compute the SHA-1 hash of the commit object
-//     const commitHash = crypto.createHash("sha1").update(commitBuffer).digest("hex");
+    // Compute the SHA-1 hash of the commit object
+    const commitHash = crypto.createHash("sha1").update(commitBuffer).digest("hex");
 
-//     // Compress the commit object content
-//     const compressedCommit = zlib.deflateSync(commitBuffer);
+    // Compress the commit object content
+    const compressedCommit = zlib.deflateSync(commitBuffer);
 
-//     // Write the compressed commit object to the .git/objects directory
-//     const dir = commitHash.slice(0, 2);
-//     const fileName = commitHash.slice(2);
-//     const commitDir = resolve(process.cwd, '.git', 'objects', dir);
+    // Write the compressed commit object to the .git/objects directory
+    const dir = commitHash.slice(0, 2);
+    const fileName = commitHash.slice(2);
+    const commitDir = resolve(process.cwd, '.git', 'objects', dir);
     
-//     fs.mkdirSync(commitDir, { recursive: true });
-//     fs.writeFileSync(resolve(commitDir, fileName), compressedCommit);
+    fs.mkdirSync(commitDir, { recursive: true });
+    fs.writeFileSync(resolve(commitDir, fileName), compressedCommit);
 
-//     // Output the commit hash
-//     process.stdout.write(commitHash + '\n');
-// }
+    // Output the commit hash
+    process.stdout.write(commitHash + '\n');
+}
 
-// Call the function when the script is executed
+//Call the function when the script is executed
 
