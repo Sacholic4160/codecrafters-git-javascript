@@ -192,12 +192,16 @@ function writeObject(hash, content) {
 
 function commitTree() {
     const treeSha = process.argv[3];
-    console.log(treeSha);
+   // console.log(treeSha);
 
     const parentTreeSha = process.argv.slice(process.argv.indexOf('-p'), process.argv.indexOf('-p')+2)[1];
-    console.log(process.argv);
-    console.log(parentTreeSha);
-    console.log(process.argv.slice(process.argv.indexOf('-p'), process.argv.indexOf('-p')+2));
-    console.log(process.argv.slice(process.argv.indexOf('-p'), process.argv.indexOf('-p')+2)[1]);
-    
+    const message = process.argv.slice(process.argv.indexOf('-m'), process.argv.indexOf('-m')+2)[1];
+    console.log(`author The Commiter <thecommitter@test.com> ${Date.now()} +0000\n`)
+
+    const commitContentBuffer = Buffer.concat([
+        Buffer.from(`tree ${treeSha}\n`),
+        Buffer.from(`parent ${parentTreeSha}\n`),
+        Buffer.from(`author The Commiter <thecommitter@test.com> ${Date.now()} +0000\n`)
+
+    ])
 }
