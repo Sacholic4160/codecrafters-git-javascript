@@ -196,7 +196,7 @@ function commitTree() {
 
     const parentTreeSha = process.argv.slice(process.argv.indexOf('-p'), process.argv.indexOf('-p')+2)[1];
     const message = process.argv.slice(process.argv.indexOf('-m'), process.argv.indexOf('-m')+2)[1];
-    console.log(`author The Commiter <thecommitter@test.com> ${Date.now()} +0000\n`)
+
 
     const commitContentBuffer = Buffer.concat([
         Buffer.from(`tree ${treeSha}\n`),
@@ -205,5 +205,20 @@ function commitTree() {
         Buffer.from(`Commiter The Commiter <thecommitter@test.com> ${Date.now()} +0000\n\n`),
         Buffer.from(`${message}\n`)
     ])
-    console.log(commitContentBuffer)
+   // console.log(getTreeStructureFromBuffer(commitContentBuffer))
+   const commitBuffer = Buffer.concat([
+    Buffer.from(`commit ${commitContentBuffer.length}\0`,commitContentBuffer)
+   ])
+
+   const commitHash = crypto.createHash("sha1").update(commitBuffer).digest("hex");
+   const compressedCommit = zlib.deflateSync(commitHash)
+
+   const dir = commitHash.slice(0, 2);
+    const fileName = commitHash.slice(2);
+    const commitDir = path.resolve(__dirname, '.git', 'objects', dir);
+    
+    mkdirSync(commitDir, { recursive: true });
+    writeFileSync(path.resolve(commitDir, fileName), compressedCommit);
+    
+    process.stdout.write(commitHash);
 }
