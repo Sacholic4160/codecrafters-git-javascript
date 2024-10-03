@@ -1,5 +1,5 @@
 const fs = require("fs");
-const {join} = require("path");
+const { join } = require("path");
 const zlib = require('zlib')
 const crypto = require('crypto');
 
@@ -54,57 +54,57 @@ function hashObject(fileName, shouldWrite) {
     // 1. Read file content
     const filePath = path.join(process.cwd(), fileName);
     const fileContent = fs.readFileSync(filePath);
-  
+
     // 2. Create the blob string: `blob <size>\0<content>`
     const blobHeader = `blob ${fileContent.length}\0`;
     const blob = Buffer.concat([Buffer.from(blobHeader), fileContent]);
-  
+
     // 3. Compute the SHA-1 hash of the blob
     const sha1 = crypto.createHash("sha1").update(blob).digest("hex");
-  
+
     // 4. Write the blob to .git/objects if the -w flag is present
     if (shouldWrite) {
-      const objectDir = path.join(process.cwd(), ".git", "objects", sha1.slice(0, 2));
-      const objectFile = sha1.slice(2);
-  
-      // Create the folder if it doesn't exist
-      fs.mkdirSync(objectDir, { recursive: true });
-  
-      // Compress the blob
-      const compressedBlob = zlib.deflateSync(blob);
-  
-      // Write the compressed blob to the objects directory
-      fs.writeFileSync(path.join(objectDir, objectFile), compressedBlob);
-      
-    // 5. Output the hash
-    process.stdout.write(sha1);
-    }
-  
+        const objectDir = path.join(process.cwd(), ".git", "objects", sha1.slice(0, 2));
+        const objectFile = sha1.slice(2);
 
-   
+        // Create the folder if it doesn't exist
+        fs.mkdirSync(objectDir, { recursive: true });
+
+        // Compress the blob
+        const compressedBlob = zlib.deflateSync(blob);
+
+        // Write the compressed blob to the objects directory
+        fs.writeFileSync(path.join(objectDir, objectFile), compressedBlob);
+
+        // 5. Output the hash
+        process.stdout.write(sha1);
+    }
+
+
+
 
 }
 
 function lsTree(flag) {
-    if(flag == '--name-only'){
+    if (flag == '--name-only') {
         const sha = process.argv[4];
-       // console.log(sha)
-        const directory = sha.slice(0,2);
-       // console.log(directory)
+        // console.log(sha)
+        const directory = sha.slice(0, 2);
+        // console.log(directory)
         const fileName = sha.slice(2);
         //console.log(fileName)
 
         const filePath = path.join(process.cwd(), '.git', 'objects', directory, fileName);
-       // console.log(filePath)
-       // console.log(fs.readFileSync(filePath))
+        // console.log(filePath)
+        // console.log(fs.readFileSync(filePath))
         // console.log(zlib.inflateSync(fs.readFileSync(filePath)).toString())
         // console.log(zlib.inflateSync(fs.readFileSync(filePath)).toString().split('\0'))
-        const inflattedData  = zlib.inflateSync(fs.readFileSync(filePath)).toString().split('\0')
-      //console.log(inflattedData)
-       const content  = inflattedData.slice(1).filter(value => value.includes(" "));
-      // console.log(content)
-       const names = content.map(value => value.split(" ")[1]);
-       // console.log(names)
+        const inflattedData = zlib.inflateSync(fs.readFileSync(filePath)).toString().split('\0')
+        //console.log(inflattedData)
+        const content = inflattedData.slice(1).filter(value => value.includes(" "));
+        // console.log(content)
+        const names = content.map(value => value.split(" ")[1]);
+        // console.log(names)
 
         names.forEach(name => process.stdout.write(`${name}\n`));
 
@@ -117,23 +117,21 @@ function writeTree() {
 }
 
 function writeTreeForPath(path) {
-      const dirContent = fs.readdirSync(path)
-      //console.log('fullPath:',fullPath);
-      const entries = dirContent.filter((name) => name !== '.git' && name !== 'main.js')
-      console.log('filter name', entries)
-        //               .map((name) => {
-        //                 console.log('map name', name)
-        //   const fullPath = join(path, name);
-        //   console.log('fullPath:',fullPath);
-        //   const stat = fs.statSync(fullPath)
-        //   console.log('stat:',stat);
-
-        //   if(stat.isDirectory()){
-        //     return ["40000", name, writeTreeForPath(name)];
-        //   } 
-        //   else if(stat.isFile()){
-        //     return ["1006"]
-        //   }
-        //               })
+    const dirContent = fs.readdirSync(path)
+    //console.log('fullPath:',fullPath);
+    const entries = dirContent.filter((name) => name !== '.git' && name !== 'main.js')
+        .map((name) => {
+            const fullPath = join(path, name);
+            console.log('fullPath:', fullPath);
+            const stat = fs.statSync(fullPath)
+            console.log('stat:', stat);
+ 
+            if (stat.isDirectory()) {
+                return ["40000", name, writeTreeForPath(name)];
+            }
+            else if (stat.isFile()) {
+                return ["1006"]
+            }
+        })
 
 }
