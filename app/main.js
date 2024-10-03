@@ -194,10 +194,10 @@ function commitTree() {
     const treeSha = process.argv[3];
    // console.log(treeSha);
 
-    // const parentTreeSha = process.argv.slice(process.argv.indexOf('-p'), process.argv.indexOf('-p')+2)[1];
-    // const message = process.argv.slice(process.argv.indexOf('-m'), process.argv.indexOf('-m')+2)[1];
-    const parentTreeSha = process.argv.indexOf('-p') !== -1 ? process.argv[process.argv.indexOf('-p') + 1] : null;
-    const message = process.argv[process.argv.indexOf('-m') + 1];
+    const parentTreeSha = process.argv.slice(process.argv.indexOf('-p'), process.argv.indexOf('-p')+2)[1];
+    const message = process.argv.slice(process.argv.indexOf('-m'), process.argv.indexOf('-m')+2)[1];
+   // const parentTreeSha = process.argv.indexOf('-p') !== -1 ? process.argv[process.argv.indexOf('-p') + 1] : null;
+   // const message = process.argv[process.argv.indexOf('-m') + 1];
 
 
     const commitContentBuffer = Buffer.concat([
