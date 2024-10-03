@@ -1,5 +1,5 @@
 const fs = require("fs");
-const path = require("path");
+const {join} = require("path");
 const zlib = require('zlib')
 const crypto = require('crypto');
 
@@ -121,7 +121,7 @@ function writeTreeForPath(path) {
       //console.log('fullPath:',fullPath);
       const entries = dirContent.filter((name) => name !== '.git' && name !== 'main.js')
                       .map((name) => {
-          const fullPath = path.join(path, name);
+          const fullPath = join(path, name);
           console.log('fullPath:',fullPath);
           const stat = fs.statSync(fullPath)
           console.log('stat:',stat);
