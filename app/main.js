@@ -116,41 +116,64 @@ function writeTree() {
     process.stdout.write(hash);
 }
 
-function writeTreeForPath(path) {
-    const dirContent = fs.readdirSync(path)
-    //console.log('fullPath:',fullPath);
-    const entries = dirContent.filter((name) => name !== '.git' && name !== 'main.js')
-        .map((name) => {
-            const fullPath = join(path, name);
-           // console.log('fullPath:', fullPath);
-            const stat = fs.statSync(fullPath)
-           // console.log('stat:', stat);
+// function writeTreeForPath(path) {
+//     const dirContent = fs.readdirSync(path)
+//     //console.log('fullPath:',fullPath);
+//     const entries = dirContent.filter((name) => name !== '.git' && name !== 'main.js')
+//         .map((name) => {
+//             const fullPath = join(path, name);
+//            // console.log('fullPath:', fullPath);
+//             const stat = fs.statSync(fullPath)
+//            // console.log('stat:', stat);
  
-            if (stat.isDirectory()) {
-                return ["40000", name, writeTreeForPath(name)];
-            }
-            else if (stat.isFile()) {
-                return ["100644", name, saveFileToBlob(name)];
-            }
-            return ["", "", ""];
-        })
-     .sort((a,b) => a[1]- b[1])
-     .reduce((acc, [mode, name, hash]) => {
-        return Buffer.concat([acc, Buffer.from(`${mode} ${name} \x00`), Buffer.from(hash, "hex")])
-     }, Buffer.alloc(0))
-     console.log('entries:', entries)
+//             if (stat.isDirectory()) {
+//                 return ["40000", name, writeTreeForPath(name)];
+//             }
+//             else if (stat.isFile()) {
+//                 return ["100644", name, saveFileToBlob(name)];
+//             }
+//             return ["", "", ""];
+//         })
+//      .sort((a,b) => a[1]- b[1])
+//      .reduce((acc, [mode, name, hash]) => {
+//         return Buffer.concat([acc, Buffer.from(`${mode} ${name} \x00`), Buffer.from(hash, "hex")])
+//      }, Buffer.alloc(0))
+//      console.log('entries:', entries)
 
-     const tree = Buffer.concat(Buffer.from(`tree ${entries.length}\x00`), entries);
-     console.log('tree:', tree)
-     const hash = crypto.createHash("sha1").update(tree).digest("hex")
-     console.log('hash:', hash)
-     writeObject(hash, tree);
-     return hash;
+//      const tree = Buffer.concat(Buffer.from(`tree ${entries.length}\x00`), entries);
+//      console.log('tree:', tree)
+//      const hash = crypto.createHash("sha1").update(tree).digest("hex")
+//      console.log('hash:', hash)
+//      writeObject(hash, tree);
+//      return hash;
 
-}
+// }
+function writeTreeForPath(path) {
+    const dirContent = readdirSync(path);
+    const entries = dirContent.filter((name) => name !== ".git" && name !== "main.js")
+      .map((name) => {
+        const fullPath = join(path, name);
+        const stat = statSync(fullPath);
+        if (stat.isDirectory()) {
+          return ["40000", name, writeTreeForPath(fullPath)];
+        } else if (stat.isFile()) {
+          return ["100644", name, saveFileAsBlob(fullPath)];
+        }
+        return ["", "", ""];
+      })
+      .sort((a, b) => a[1] - b[1])
+      .reduce((acc, [mode, name, hash]) => {
+        return Buffer.concat([acc, Buffer.from(`${mode} ${name}\x00`), Buffer.from(hash, "hex")]);
+      }, Buffer.alloc(0));
+    const tree = Buffer.concat([Buffer.from(`tree ${entries.length}\x00`), entries]);
+    const hash = createHash("sha1").update(tree).digest("hex");
+    console.log(entries.map(([, , name]) => name).sort().join("\n"));
+    writeObject(hash, tree);
+    return hash;
+  }
 
 
-function saveFileToBlob(file) {
+function saveFileAsBlob(file) {
  
    // console.log('fs.readFileSync(file):', fs.readFileSync(file)) data inside the file using this 
     const data = `blob ${fs.statSync(file).size}\x00${fs.readFileSync(file)}`
