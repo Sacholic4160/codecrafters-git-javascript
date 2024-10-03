@@ -122,9 +122,9 @@ function writeTreeForPath(path) {
     const entries = dirContent.filter((name) => name !== '.git' && name !== 'main.js')
         .map((name) => {
             const fullPath = join(path, name);
-            console.log('fullPath:', fullPath);
+           // console.log('fullPath:', fullPath);
             const stat = fs.statSync(fullPath)
-            console.log('stat:', stat);
+           // console.log('stat:', stat);
  
             if (stat.isDirectory()) {
                 return ["40000", name, writeTreeForPath(name)];
